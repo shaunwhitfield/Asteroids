@@ -23,11 +23,16 @@ function SetupCanvas(){
     }
     document.body.addEventListener("keydown", function(e){
         keys[e.keyCode] = true;
+        console.log(e.keyCode);
     }); // whatever keys are down, make true
     document.body.addEventListener("keyup", function(e){
         keys[e.keyCode] = false;
         if(e.keyCode === 32){
           bullets.push(new Bullet(ship.angle));
+        }
+
+        if(e.keyCode === 16){
+            ship.speed = 0.1;
         }
     }); // return key to false when back up
 
@@ -65,6 +70,13 @@ class Ship {
             this.velX += Math.cos(radians) * this.speed;
             // oldY + sin(radians) * distance
             this.velY += Math.sin(radians) * this.speed;
+        }
+
+        if(this.movingBackward){
+            // oldX + cos(radians) * distance
+            this.velX += Math.cos(radians) * this.speed * -1;
+            // oldY + sin(radians) * distance
+            this.velY += Math.sin(radians) * this.speed * -1;
         }
 
         // travel off of left of screen
@@ -194,12 +206,18 @@ class Asteroid{
 // Render() updates position of objects on canvas
 function Render(){
     ship.movingForward = (keys[87]); // 'w' key down
+    ship.movingBackward = (keys[83]); // 's' key down
+
     if(keys[68]){ //'d' key down
         ship.Rotate(1);
     }
 
     if(keys[65]){ //'a' key down
         ship.Rotate(-1);
+    }
+
+    if(keys[16]){ //'a' key down
+        ship.speed = 0.3;
     }
 
     ctx.clearRect(0,0,canvasWidth,canvasHeight);
